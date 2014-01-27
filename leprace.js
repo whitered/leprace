@@ -46,6 +46,7 @@
     var tagRegexp = /<\/?[\w]+[^>]*>/;
     var pos, md, i, j;
 
+
     while((pos = text.search(tagRegexp)) >= 0) {
       texts.push(text.substr(0, pos));
       md = text.match(tagRegexp);
@@ -67,11 +68,13 @@
       text += texts[i] + tags[i];
     }
     text += texts[texts.length - 1];
+    text = text.split("<").join("&lt;").split(">").join("&gt;");
+    text = text.split("\n").join("<br>");
     return text;
   }
 
   var updatePreview = function(){
-    preview.text(replace(textarea.val()));
+    preview.html(replace(textarea.val()));
   }
 
   var togglePreview = function(){
