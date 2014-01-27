@@ -49,11 +49,26 @@
   }
 
   var updatePreview = function(){
-    preview.html(replace(textarea.val()));
+    preview.text(replace(textarea.val()));
   }
 
-  var preview = $("<div></div>");
-  $("#reply_form").prepend(preview);
+  var togglePreview = function(){
+    if(preview.is(":hidden")){
+      preview.slideDown("fast");
+      info.text("Скрыть предпросмотр");
+    } else {
+      preview.slideUp("fast");
+      info.text("Показать предпросмотр");
+    }
+    return false;
+  }
+
+  var info = $("<a href=''></a>");
+  var preview = $("<div style='display: hidden;'></div>");
+  $("#reply_form").prepend(info, preview);
+
+  info.click(togglePreview);
+  togglePreview();
 
   var textarea = $("#comment_textarea");
   textarea.on('input propertychange', updatePreview);
