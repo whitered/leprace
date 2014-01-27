@@ -41,10 +41,32 @@
 
 
   var replace = function(text){
-    for(var i = replacements.length - 1; i >= 0; i--){
-      r = replacements[i];
-      text = text.split(r[0]).join(r[1]);
-    };
+    var texts = [];
+    var tags = [];
+    var tagRegexp = /<[^>]+>/;
+    var pos, md, i, j;
+
+    while((pos = text.search(tagRegexp)) >= 0) {
+      texts.push(text.substr(0, pos));
+      md = text.match(tagRegexp);
+      tags.push(md[0]);
+      text = text.substr(pos + md[0].length);
+    }
+
+    texts.push(text);
+
+    for(j = 0; j < texts.length; j++){
+      for(i = replacements.length - 1; i >= 0; i--){
+        r = replacements[i];
+        texts[j] = texts[j].split(r[0]).join(r[1]);
+      };
+    }
+
+    text = '';
+    for(i = 0; i < tags.length; i++){
+      text += texts[i] + tags[i];
+    }
+    text += texts[texts.length - 1];
     return text;
   }
 
