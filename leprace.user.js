@@ -2,7 +2,7 @@
 // @name           leprace
 // @namespace      ru.whitered
 // @include        http://leprosorium.ru/*
-// @include        http://*.leprosorium.ru/*
+// @exclude        http://leprosorium.ru/my/inbox/*
 // ==/UserScript==
 
 function addJQuery(callback) {

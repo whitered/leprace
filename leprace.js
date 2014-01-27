@@ -2,7 +2,7 @@
 // @name           leprace
 // @namespace      ru.whitered
 // @include        http://leprosorium.ru/*
-// @include        http://*.leprosorium.ru/*
+// @exclude        http://leprosorium.ru/my/inbox/*
 // ==/UserScript==
 
 
@@ -55,22 +55,22 @@
   var togglePreview = function(){
     if(preview.is(":hidden")){
       preview.slideDown("fast");
-      info.text("Скрыть предпросмотр");
+      info.text("Скрыть предпросмотр автозамен");
     } else {
       preview.slideUp("fast");
-      info.text("Показать предпросмотр");
+      info.text("Показать предпросмотр автозамен");
     }
     return false;
   }
 
   var info = $("<a style='font-size: 10px;' href=''></a>");
   var preview = $("<div style='font-size: 13px;' style='display: hidden;'></div>");
-  $("#reply_form").prepend(info, preview);
 
   info.click(togglePreview);
   togglePreview();
 
   var textarea = $("#comment_textarea");
+  textarea.parent().prepend(info, preview);
   textarea.on('input propertychange', updatePreview);
 
   var replacements = [];
