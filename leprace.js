@@ -29,7 +29,7 @@
 
     scripts = $("script:not([src])", data);
     scripts.each(function(index, data){
-      md = data.innerText.match(/pag = new Paginator\('paginator', (\d+), \d+, (\d+)/);
+      md = $(data).text().match(/pag = new Paginator\('paginator', (\d+), \d+, (\d+)/);
       if(md){
         pagesTotal = Number(md[1]);
         currentPage = Number(md[2]);
