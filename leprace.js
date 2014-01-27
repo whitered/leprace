@@ -63,8 +63,8 @@
     return false;
   }
 
-  var info = $("<a href=''></a>");
-  var preview = $("<div style='display: hidden;'></div>");
+  var info = $("<a style='font-size: 10px;' href=''></a>");
+  var preview = $("<div style='font-size: 13px;' style='display: hidden;'></div>");
   $("#reply_form").prepend(info, preview);
 
   info.click(togglePreview);
