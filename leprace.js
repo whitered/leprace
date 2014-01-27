@@ -43,7 +43,7 @@
   var replace = function(text){
     var texts = [];
     var tags = [];
-    var tagRegexp = /<\/?[\w]+[^>].>/;
+    var tagRegexp = /<\/?[\w]+[^>]*>/;
     var pos, md, i, j;
 
     while((pos = text.search(tagRegexp)) >= 0) {
