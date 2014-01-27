@@ -43,7 +43,7 @@
   var replace = function(text){
     for(var i = replacements.length - 1; i >= 0; i--){
       r = replacements[i];
-      text = text.replace(r[0], r[1]);
+      text = text.split(r[0]).join(r[1]);
     };
     return text;
   }
