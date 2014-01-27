@@ -63,8 +63,16 @@
     return false;
   }
 
-  var info = $("<a style='font-size: 10px;' href=''></a>");
-  var preview = $("<div style='font-size: 13px;' style='display: hidden;'></div>");
+  var info = $("<a href=''></a>");
+  info.css('font-size', '10px');
+  info.css('margin-bottom', '0.5em');
+  info.css('border-bottom', '1px dashed');
+  info.css('text-decoration', 'none');
+
+  var preview = $("<div></div>");
+  preview.css('font-size', '13px');
+  preview.css('margin-bottom', '0.5em');
+  preview.hide();
 
   info.click(togglePreview);
   togglePreview();
