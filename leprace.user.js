@@ -18,7 +18,7 @@ function addJQuery(callback) {
 
 function includeScript() {
   var s = document.createElement("script");
-  s.src = "http://leprace.dev/leprace.js";
+  s.src = "https://raw.github.com/whitered/leprace/master/leprace.js";
   document.body.appendChild(s);
 }
 
