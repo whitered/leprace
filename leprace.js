@@ -22,17 +22,15 @@
 
 
   var parseReplacements = function(data){
-    words = $("table.fraud_one_word", data);
-    words.each(addWord);
+    $("table.fraud_one_word", data).each(addWord);
 
     updatePreview();
 
-    scripts = $("script:not([src])", data);
-    scripts.each(function(index, data){
-      md = $(data).text().match(/pag = new Paginator\('paginator', (\d+), \d+, (\d+)/);
-      if(md){
-        pagesTotal = Number(md[1]);
-        currentPage = Number(md[2]);
+    $("script:not([src])", data).each(function(index, data){
+      var match = $(data).text().match(/pag = new Paginator\('paginator', (\d+), \d+, (\d+)/);
+      if(match){
+        pagesTotal = Number(match[1]);
+        currentPage = Number(match[2]);
         if(currentPage < pagesTotal) loadReplacementsPage(currentPage + 1);
         return;
       }
@@ -40,27 +38,93 @@
   }
 
 
-  var replace = function(text){
+
+  var applyReplacements = function(text, tags){
+    var r;
+    for(var i = replacements.length - 1; i >= 0; i--){
+      r = replacements[i];
+      text = text.split(r[0]).join(r[1]);
+    };
+    return text;
+  }
+
+
+
+  var buildEmptyTag = function(tagname){
+    return "<" + tagname + "></" + tagname + ">";
+  }
+
+
+
+  var makeSafe = function(text, tags){
+    var availableTags = "i,b,u,a,sub,sup,irony,spoiler".split(",");
+    for(var i = 0; i < availableTags.length; i++){
+      if(tags.indexOf(availableTags[i]) == -1){
+        return text[0] + buildEmptyTag(availableTags[i]) + text.substr(1);
+      }
+    }
+    return text[0] + buildEmptyTag("i") + text.substr(1);
+  }
+
+
+
+  var preventReplacements = function(text, tags){
+    var from, to;
+    var prevented = false;
+    while(!prevented){
+      prevented = true;
+      for(var i = replacements.length - 1; i >= 0; i--){
+        from = replacements[i][0];
+        if(text.indexOf(from) >= 0){
+          to = makeSafe(from, tags);
+          text = text.replace(from, to);
+          prevented = false;
+          break;
+        }
+      };
+    };
+    return text;
+  }
+
+
+  var process = function(text, proc){
     var texts = [];
     var tags = [];
     var tagRegexp = /<\/?[\w]+[^>]*>/;
-    var pos, md, i, j;
+    var pos, match, i;
+    var openTags = [];
+    var tagSets = [''];
+
+    var handleTag = function(tag){
+      var tagname = tag.match(/\w+/)[0];
+      var open = tag.charAt(1) != '/';
+      var lastTag = openTags[openTags.length - 1];
+      if(open){
+        if(lastTag != tagname) openTags.push(tagname);
+      } else {
+        for (var i = openTags.length - 1; i >= 0; i--){
+          if(openTags[i] == tagname){
+            openTags.splice(i, 1);
+            break;
+          }
+        }
+      }
+    }
 
 
     while((pos = text.search(tagRegexp)) >= 0) {
       texts.push(text.substr(0, pos));
-      md = text.match(tagRegexp);
-      tags.push(md[0]);
-      text = text.substr(pos + md[0].length);
+      match = text.match(tagRegexp)[0];
+      tags.push(match);
+      handleTag(match);
+      tagSets.push(openTags.join(','));
+      text = text.substr(pos + match.length);
     }
 
     texts.push(text);
 
-    for(j = 0; j < texts.length; j++){
-      for(i = replacements.length - 1; i >= 0; i--){
-        r = replacements[i];
-        texts[j] = texts[j].split(r[0]).join(r[1]);
-      };
+    for(i = 0; i < texts.length; i++){
+      texts[i] = proc(texts[i], tagSets[i]);
     }
 
     text = '';
@@ -68,14 +132,19 @@
       text += texts[i] + tags[i];
     }
     text += texts[texts.length - 1];
-    text = text.split("<").join("&lt;").split(">").join("&gt;");
-    text = text.split("\n").join("<br>");
     return text;
   }
 
+
+
   var updatePreview = function(){
-    preview.html(replace(textarea.val()));
+    var text = process(textarea.val(), applyReplacements);
+    text = text.split("<").join("&lt;").split(">").join("&gt;");
+    text = text.split("\n").join("<br>");
+    preview.html(text);
   }
+
+
 
   var togglePreview = function(){
     if(preview.is(":hidden")){
@@ -88,11 +157,31 @@
     return false;
   }
 
+
+
+  var fixText = function(){
+    textarea.val(process(textarea.val(), preventReplacements));
+    updatePreview();
+    return false;
+  }
+
+
+
   var info = $("<a href=''></a>");
-  info.css('font-size', '10px');
-  info.css('margin-bottom', '0.5em');
   info.css('border-bottom', '1px dashed');
   info.css('text-decoration', 'none');
+
+  var fix = $("<a href=''>Исправить</a>");
+  fix.css('border-bottom', '1px dashed');
+  fix.css('text-decoration', 'none');
+  fix.click(fixText);
+
+  var header = $("<div/>");
+  header.css('font-size', '10px');
+  header.css('margin-bottom', '0.5em');
+  header.append(info);
+  header.append(' | ');
+  header.append(fix);
 
   var preview = $("<div></div>");
   preview.css('font-size', '13px');
@@ -103,7 +192,7 @@
   togglePreview();
 
   var textarea = $("#comment_textarea");
-  textarea.parent().prepend(info, preview);
+  textarea.parent().prepend(header, preview);
   textarea.on('input propertychange', updatePreview);
 
   var replacements = [];
