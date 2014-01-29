@@ -90,7 +90,7 @@
   var process = function(text, proc){
     var texts = [];
     var tags = [];
-    var tagRegexp = /<\/?[\w]+[^>]*>/;
+    var tagRegexp = /<\/?(u|i|a|b|sup|sub|spoiler|irony|img|ninja|panda|rage|fury|jarost|lopata)( \S+)*>/;
     var pos, match, i;
     var openTags = [];
     var tagSets = [''];
@@ -137,10 +137,17 @@
 
 
 
+
+  var escapeSymbols = function(text){
+    return text.split('<').join('&lt;');
+  };
+
+
+
   var updatePreview = function(){
     var text = process(textarea.val(), applyReplacements);
-    text = text.split("<").join("&lt;").split(">").join("&gt;");
     text = text.split("\n").join("<br>");
+    text = process(text, escapeSymbols);
     preview.html(text);
   }
 
