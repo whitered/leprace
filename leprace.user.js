@@ -158,10 +158,17 @@ function initLeprace(){
 
 
   var updatePreview = function(){
+    var panda = "<img src='http://img.dirty.ru/lepro/panda.gif'>";
+    var ninja = "<img src='http://img.dirty.ru/pics/ninja.gif'>";
     var text = process(textarea.val(), applyReplacements);
     text = text.split("\n").join("<br>");
     text = text.split("<irony>").join("<span class='irony'>").split("</irony>").join("</span>");
     text = text.split("<spoiler>").join("<span class='spoiler'><span class='inner_spoiler'>").split("</spoiler>").join("</span></span>");
+    text = text.split(/<panda *\/?>/).join(panda);
+    text = text.split(/<rage *\/?>/).join(panda);
+    text = text.split(/<fury *\/?>/).join(panda);
+    text = text.split(/<jarost *\/?>/).join(panda);
+    text = text.split(/<ninja *\/?>/).join(ninja);
     text = process(text, escapeSymbols);
     preview.html(text);
   }
