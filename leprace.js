@@ -6,7 +6,20 @@
 // ==/UserScript==
 
 
-(function($){
+
+(function(){
+  var addJQuery = function(callback) {
+    var script = document.createElement("script");
+    script.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js");
+    script.addEventListener('load', function() {
+      var script = document.createElement("script");
+      script.textContent = "window.jQ=jQuery.noConflict(true);(" + callback.toString() + ")();";
+      document.body.appendChild(script);
+    }, false);
+    document.body.appendChild(script);
+  }
+
+
 
   var addWord = function(index, data){
     var from = $("td.fow_word", data).text();
@@ -90,7 +103,7 @@
   var process = function(text, proc){
     var texts = [];
     var tags = [];
-    var tagRegexp = /<\/?(u|i|a|b|sup|sub|spoiler|irony|img|ninja|panda|rage|fury|jarost|lopata)( \S+)*>/;
+    var tagRegexp = /<\/?(u|i|a|b|br|sup|sub|spoiler|irony|img|ninja|panda|rage|fury|jarost|lopata)( \S+)*>/;
     var pos, match, i;
     var openTags = [];
     var tagSets = [''];
@@ -156,10 +169,10 @@
   var togglePreview = function(){
     if(preview.is(":hidden")){
       preview.slideDown("fast");
-      info.text("Скрыть предпросмотр автозамен");
+      togglePreviewLink.text("Скрыть предпросмотр автозамен");
     } else {
       preview.slideUp("fast");
-      info.text("Показать предпросмотр автозамен");
+      togglePreviewLink.text("Показать предпросмотр автозамен");
     }
     return false;
   }
@@ -173,45 +186,54 @@
   }
 
 
+  var $, preview, replacements, togglePreviewLink, textarea;
 
-  var info = $("<a href=''></a>");
-  info.css('border-bottom', '1px dashed');
-  info.css('text-decoration', 'none');
 
-  var fix = $("<a href=''>Исправить</a>");
-  fix.css('border-bottom', '1px dashed');
-  fix.css('text-decoration', 'none');
-  fix.click(fixText);
+  var init = function(){
+    $ = window.jQ;
 
-  var header = $("<div/>");
-  header.css('font-size', '10px');
-  header.css('margin-bottom', '0.5em');
-  header.append(info);
-  header.append(' | ');
-  header.append(fix);
+    togglePreviewLink = $("<a href=''></a>");
+    togglePreviewLink.css('border-bottom', '1px dashed');
+    togglePreviewLink.css('text-decoration', 'none');
+    togglePreviewLink.click(togglePreview);
 
-  var preview = $("<div></div>");
-  preview.css('font-size', '13px');
-  preview.css('margin-bottom', '0.5em');
-  preview.hide();
+    var fix = $("<a href=''>Исправить</a>");
+    fix.css('border-bottom', '1px dashed');
+    fix.css('text-decoration', 'none');
+    fix.click(fixText);
 
-  info.click(togglePreview);
-  togglePreview();
+    var header = $("<div/>");
+    header.css('font-size', '10px');
+    header.css('margin-bottom', '0.5em');
+    header.append(togglePreviewLink);
+    header.append(' | ');
+    header.append(fix);
 
-  var textarea = $("#comment_textarea");
-  textarea.parent().prepend(header, preview);
-  textarea.on('input propertychange', updatePreview);
+    preview = $("<div></div>");
+    preview.css('font-size', '13px');
+    preview.css('margin-bottom', '0.5em');
+    preview.hide();
 
-  var replacements = [];
+    togglePreview();
 
-  diprf = displayInPlaceReplyForm;
-  displayInPlaceReplyForm = function(replyLink, userLink){
-    diprf(replyLink, userLink);
-    updatePreview();
-    return false;
+    textarea = $("#comment_textarea");
+    textarea.parent().prepend(header, preview);
+    textarea.on('input propertychange', updatePreview);
+
+    replacements = [];
+
+    diprf = displayInPlaceReplyForm;
+    displayInPlaceReplyForm = function(replyLink, userLink){
+      diprf(replyLink, userLink);
+      updatePreview();
+      return false;
+    }
+
+
+    loadReplacementsPage(1);
   }
 
 
-  loadReplacementsPage(1);
-})(window.jQ);
-
+  if(window.jQ) init();
+  else addJQuery(init);
+})();
