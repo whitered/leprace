@@ -7,10 +7,8 @@
 // ==/UserScript==
 
 
-function includeScript() {
+(function() {
   var s = document.createElement("script");
   s.src = "https://raw.github.com/whitered/leprace/master/leprace.user.js";
   document.body.appendChild(s);
-}
-
-includeScript();
+})();

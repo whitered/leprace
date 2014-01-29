@@ -21,8 +21,6 @@ function addJQuery(callback) {
 
 function initLeprace(){
 
-
-
   var addWord = function(index, data){
     var from = $("td.fow_word", data).text();
     var to = $("td.fow_to_word", data).text();
@@ -192,7 +190,7 @@ function initLeprace(){
   var $, preview, replacements, togglePreviewLink, textarea;
 
 
-  var init = function(){
+  (function(){
     $ = window.jQ;
 
     togglePreviewLink = $("<a href=''></a>");
@@ -235,11 +233,7 @@ function initLeprace(){
 
 
     loadReplacementsPage(1);
-  }
-
-  init();
-
-
+  })();
 };
 
 if(window.jQ) initLeprace();
