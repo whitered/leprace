@@ -199,7 +199,7 @@
     togglePreviewLink.css('text-decoration', 'none');
     togglePreviewLink.click(togglePreview);
 
-    var fix = $("<a href=''>Исправить</a>");
+    var fix = $("<a href=''>Антизамены</a>");
     fix.css('border-bottom', '1px dashed');
     fix.css('text-decoration', 'none');
     fix.click(fixText);
@@ -214,6 +214,7 @@
     preview = $("<div></div>");
     preview.css('font-size', '13px');
     preview.css('margin-bottom', '0.5em');
+    preview.css('color', '#000');
     preview.hide();
 
     togglePreview();
