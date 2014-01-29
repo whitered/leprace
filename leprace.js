@@ -3,6 +3,7 @@
 // @namespace      ru.whitered
 // @include        http://leprosorium.ru/*
 // @exclude        http://leprosorium.ru/my/inbox/*
+// @version        2.0
 // ==/UserScript==
 
 
@@ -103,7 +104,7 @@
   var process = function(text, proc){
     var texts = [];
     var tags = [];
-    var tagRegexp = /<\/?(u|i|a|b|br|sup|sub|spoiler|irony|img|ninja|panda|rage|fury|jarost|lopata)( \S+)*>/;
+    var tagRegexp = /<\/?(u|i|a|b|br|sup|sub|span|spoiler|irony|img|ninja|panda|rage|fury|jarost|lopata)( \S+)*>/;
     var pos, match, i;
     var openTags = [];
     var tagSets = [''];
@@ -160,6 +161,7 @@
   var updatePreview = function(){
     var text = process(textarea.val(), applyReplacements);
     text = text.split("\n").join("<br>");
+    text = text.split("<irony>").join("<span class='irony'>").split("</irony>").join("</span>");
     text = process(text, escapeSymbols);
     preview.html(text);
   }
@@ -169,10 +171,10 @@
   var togglePreview = function(){
     if(preview.is(":hidden")){
       preview.slideDown("fast");
-      togglePreviewLink.text("Скрыть предпросмотр автозамен");
+      togglePreviewLink.text("Скрыть предпросмотр");
     } else {
       preview.slideUp("fast");
-      togglePreviewLink.text("Показать предпросмотр автозамен");
+      togglePreviewLink.text("Показать предпросмотр");
     }
     return false;
   }
