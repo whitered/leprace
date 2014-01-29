@@ -161,6 +161,7 @@ function initLeprace(){
     var text = process(textarea.val(), applyReplacements);
     text = text.split("\n").join("<br>");
     text = text.split("<irony>").join("<span class='irony'>").split("</irony>").join("</span>");
+    text = text.split("<spoiler>").join("<span class='spoiler'><span class='inner_spoiler'>").split("</spoiler>").join("</span></span>");
     text = process(text, escapeSymbols);
     preview.html(text);
   }
