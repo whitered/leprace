@@ -7,18 +7,19 @@
 // ==/UserScript==
 
 
-
-(function(){
-  var addJQuery = function(callback) {
+function addJQuery(callback) {
+  var script = document.createElement("script");
+  script.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js");
+  script.addEventListener('load', function() {
     var script = document.createElement("script");
-    script.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js");
-    script.addEventListener('load', function() {
-      var script = document.createElement("script");
-      script.textContent = "window.jQ=jQuery.noConflict(true);(" + callback.toString() + ")();";
-      document.body.appendChild(script);
-    }, false);
+    script.textContent = "window.jQ=jQuery.noConflict(true);(" + callback.toString() + ")();";
     document.body.appendChild(script);
-  }
+  }, false);
+  document.body.appendChild(script);
+}
+
+
+function initLeprace(){
 
 
 
@@ -236,7 +237,10 @@
     loadReplacementsPage(1);
   }
 
+  init();
 
-  if(window.jQ) init();
-  else addJQuery(init);
-})();
+
+};
+
+if(window.jQ) initLeprace();
+else addJQuery(initLeprace);
