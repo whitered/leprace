@@ -21,20 +21,20 @@ function addJQuery(callback) {
 
 function initLeprace(){
 
-  var addWord = function(index, data){
+  function addWord(index, data){
     var from = $("td.fow_word", data).text();
     var to = $("td.fow_to_word", data).text();
     replacements.push([from, to]);
   }
 
 
-  var loadReplacementsPage = function(page){
+  function loadReplacementsPage(page){
     var url = "http://leprosorium.ru/fraud/textomate/" + page;
     $.get(url, parseReplacements);
   }
 
 
-  var parseReplacements = function(data){
+  function parseReplacements(data){
     $("table.fraud_one_word", data).each(addWord);
 
     updatePreview();
@@ -52,7 +52,7 @@ function initLeprace(){
 
 
 
-  var applyReplacements = function(text, tags){
+  function applyReplacements(text, tags){
     var r;
     for(var i = replacements.length - 1; i >= 0; i--){
       r = replacements[i];
@@ -63,13 +63,13 @@ function initLeprace(){
 
 
 
-  var buildEmptyTag = function(tagname){
+  function buildEmptyTag(tagname){
     return "<" + tagname + "></" + tagname + ">";
   }
 
 
 
-  var makeSafe = function(text, tags){
+  function makeSafe(text, tags){
     var availableTags = "i,b,u,a,sub,sup,irony,spoiler".split(",");
     for(var i = 0; i < availableTags.length; i++){
       if(tags.indexOf(availableTags[i]) == -1){
@@ -81,7 +81,7 @@ function initLeprace(){
 
 
 
-  var preventReplacements = function(text, tags){
+  function preventReplacements(text, tags){
     var from, to;
     var prevented = false;
     while(!prevented){
@@ -100,7 +100,7 @@ function initLeprace(){
   }
 
 
-  var process = function(text, proc){
+  function process(text, proc){
     var texts = [];
     var tags = [];
     var tagRegexp = /<\/?(u|i|a|b|br|sup|sub|span|spoiler|irony|img|ninja|panda|rage|fury|jarost|lopata)( \S+)*>/;
@@ -108,7 +108,7 @@ function initLeprace(){
     var openTags = [];
     var tagSets = [''];
 
-    var handleTag = function(tag){
+    function handleTag(tag){
       var tagname = tag.match(/\w+/)[0];
       var open = tag.charAt(1) != '/';
       var lastTag = openTags[openTags.length - 1];
@@ -151,13 +151,13 @@ function initLeprace(){
 
 
 
-  var escapeSymbols = function(text){
+  function escapeSymbols(text){
     return text.split('<').join('&lt;');
   };
 
 
 
-  var updatePreview = function(){
+  function updatePreview(){
     var panda = "<img src='http://img.dirty.ru/lepro/panda.gif'>";
     var ninja = "<img src='http://img.dirty.ru/pics/ninja.gif'>";
     var text = process(textarea.val(), applyReplacements);
@@ -175,7 +175,7 @@ function initLeprace(){
 
 
 
-  var togglePreview = function(){
+  function togglePreview(){
     if(preview.is(":hidden")){
       preview.slideDown("fast");
       togglePreviewLink.text("Скрыть предпросмотр");
@@ -188,7 +188,7 @@ function initLeprace(){
 
 
 
-  var fixText = function(){
+  function fixText(){
     textarea.val(process(textarea.val(), preventReplacements));
     updatePreview();
     return false;
